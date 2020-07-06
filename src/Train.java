@@ -17,15 +17,15 @@ public class Train {
             if (src.empty()) {
                 throw new Exception("no image input");
             }
-            
+
             TrainMethod trainMethod = new TrainMethod();
-            
+
             Point[][] pointSet = new Point[MAXNUM][3];
-            
-            codeMethod.getLocationSet(src, pointSet);
+
+            trainMethod.getLocationSet(src, pointSet);
 
             // 根据二维码顶点集切割出发票
-            codeMethod.getTicket(src, pointSet);
+            trainMethod.getTicket(src, pointSet);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -287,7 +287,6 @@ public class ReceiptMethod {
 
         double rollAngle;
 
-
         if (deltax == 0) {
             // 竖直放
             if (deltay > 0) {

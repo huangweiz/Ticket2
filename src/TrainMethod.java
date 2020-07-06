@@ -1,10 +1,11 @@
-
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import sun.security.provider.SHA;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledExecutorService;
 
 import static org.opencv.imgproc.Imgproc.INTER_LINEAR;
 import static org.opencv.imgproc.Imgproc.getRotationMatrix2D;
@@ -263,6 +264,7 @@ public class TrainMethod {
 
                 Imgproc.warpAffine(destImage, destImage, m, new Size(length, length), INTER_LINEAR, 0, new Scalar(255, 255, 255));
 
+
                 double firstx = centerp.x - ticket_width / 2;
                 double firsty = centerp.y - ticket_height / 2;
                 double secondx = centerp.x + ticket_width / 2;
@@ -274,7 +276,7 @@ public class TrainMethod {
                 Rect rect = new Rect(firstPoint, secondPoint);
                 Mat newMat = new Mat(destImage, rect);
 
-                String filename = "./images/receiptFile" + index + ".png";
+                String filename = "./images/trainFile" + index + ".png";
                 index++;
                 System.out.println(filename);
                 Imgcodecs.imwrite(filename, newMat);
@@ -287,7 +289,6 @@ public class TrainMethod {
         double deltax = rectPoint[0].x - rectPoint[1].x;
 
         double rollAngle;
-
 
         if (deltax == 0) {
             // 竖直放
@@ -302,7 +303,7 @@ public class TrainMethod {
                 if (deltax > 0) {
                     rollAngle = rollAngle + 180;
                 }
-            } else if (deltay < 0) {
+            } else if (deltay > 0) {
                 // 如果deltay > 0 在旋转180度
                 rollAngle = rollAngle + 180;
             }
@@ -325,19 +326,20 @@ public class TrainMethod {
         根据三个二维码顶点，求出发票的四个顶点
 
      */
-    private Point[] getRect(Point[] points) {
+    private static Point[] getRect(Point[] points) {
+
         Point[] newPoint = new Point[4];
-        double right_y = (points[1].y - points[0].y) * 14.4 + points[0].y;
-        double right_x = (points[1].x - points[0].x) * 14.4 + points[0].x;
+        double right_y = (points[1].y - points[0].y) * 1.6 + points[0].y;
+        double right_x = (points[1].x - points[0].x) * 1.6 + points[0].x;
 
-        double left_y = (points[0].y - points[1].y) * 2 + points[1].y;
-        double left_x = (points[0].x - points[1].x) * 2 + points[1].x;
+        double left_y = (points[0].y - points[1].y) * 7 + points[1].y;
+        double left_x = (points[0].x - points[1].x) * 7 + points[1].x;
 
-        double up_y = (points[0].y - points[2].y) * 1.5 + points[2].y;
-        double up_x = (points[0].x - points[2].x) * 1.5 + points[2].x;
+        double up_y = (points[0].y - points[2].y) * 4 + points[2].y;
+        double up_x = (points[0].x - points[2].x) * 4 + points[2].x;
 
-        double down_y = (points[2].y - points[0].y) * 9.4 + points[0].y;
-        double down_x = (points[2].x - points[0].x) * 9.4 + points[0].x;
+        double down_y = (points[2].y - points[0].y) * 1.7 + points[0].y;
+        double down_x = (points[2].x - points[0].x) * 1.7 + points[0].x;
 
 
         // 根据上面四个顶点再求需要的矩形顶点
@@ -386,6 +388,7 @@ public class TrainMethod {
             y4 = k1 * (x4 - right_x) + right_y;
 
         }
+
 
         newPoint[0] = new Point(x1, y1);
         newPoint[1] = new Point(x2, y2);

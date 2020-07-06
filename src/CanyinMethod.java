@@ -275,7 +275,6 @@ public class CanyinMethod {
                     rollAngle = rollAngle + 180;
                 }
             } else if (deltay < 0) {
-                // 如果deltay > 0 在旋转180度
                 rollAngle = rollAngle + 180;
             }
         }
