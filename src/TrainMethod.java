@@ -1,12 +1,8 @@
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import sun.security.provider.SHA;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ScheduledExecutorService;
-
 import static org.opencv.imgproc.Imgproc.INTER_LINEAR;
 import static org.opencv.imgproc.Imgproc.getRotationMatrix2D;
 
@@ -224,6 +220,7 @@ public class TrainMethod {
                 // 根据四个顶点坐标计算出发票中心坐标，需要旋转的角度
                 Point ticket_center = getPoint(rectPoint);
                 double roll_angle = getAngle(rectPoint);
+                System.out.println(roll_angle);
 
                 // 求出发票的长宽和需要围绕中心点裁剪出来的正方形的边长
                 double ticket_width = Math.sqrt(Math.abs((rectPoint[1].y - rectPoint[0].y) * (rectPoint[1].y - rectPoint[0].y) + (rectPoint[1].x - rectPoint[0].x) * (rectPoint[1].x - rectPoint[0].x)));
@@ -299,12 +296,7 @@ public class TrainMethod {
             }
         } else {
             rollAngle = Math.toDegrees(Math.atan(deltay / deltax));
-            if (deltay == 0) {
-                if (deltax > 0) {
-                    rollAngle = rollAngle + 180;
-                }
-            } else if (deltay > 0) {
-                // 如果deltay > 0 在旋转180度
+            if(deltax > 0){
                 rollAngle = rollAngle + 180;
             }
         }
@@ -326,8 +318,7 @@ public class TrainMethod {
         根据三个二维码顶点，求出发票的四个顶点
 
      */
-    private static Point[] getRect(Point[] points) {
-
+    private Point[] getRect(Point[] points) {
         Point[] newPoint = new Point[4];
         double right_y = (points[1].y - points[0].y) * 1.6 + points[0].y;
         double right_x = (points[1].x - points[0].x) * 1.6 + points[0].x;
@@ -388,7 +379,6 @@ public class TrainMethod {
             y4 = k1 * (x4 - right_x) + right_y;
 
         }
-
 
         newPoint[0] = new Point(x1, y1);
         newPoint[1] = new Point(x2, y2);

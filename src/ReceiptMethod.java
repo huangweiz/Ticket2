@@ -296,12 +296,7 @@ public class ReceiptMethod {
             }
         } else {
             rollAngle = Math.toDegrees(Math.atan(deltay / deltax));
-            if (deltay == 0) {
-                if (deltax > 0) {
-                    rollAngle = rollAngle + 180;
-                }
-            } else if (deltay < 0) {
-                // 如果deltay > 0 在旋转180度
+            if(deltax > 0){
                 rollAngle = rollAngle + 180;
             }
         }

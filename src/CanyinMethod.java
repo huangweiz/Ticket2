@@ -270,11 +270,7 @@ public class CanyinMethod {
             }
         } else {
             rollAngle = Math.toDegrees(Math.atan(deltay / deltax));
-            if (deltay == 0) {
-                if (deltax > 0) {
-                    rollAngle = rollAngle + 180;
-                }
-            } else if (deltay < 0) {
+            if(deltax > 0){
                 rollAngle = rollAngle + 180;
             }
         }
