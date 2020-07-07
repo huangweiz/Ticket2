@@ -20,7 +20,7 @@ public class CanyinMethod {
 
         List<MatOfPoint> contours = new ArrayList<>();
         List<MatOfPoint> temp_contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
+        Mat hierarchy = new Mat();          // 依次为  后、前、子、父  轮廓的索引
 
         Imgproc.findContours(gray, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
@@ -28,18 +28,19 @@ public class CanyinMethod {
 
         for (int i = 0; i < contours.size(); i++) {
             double[] temp_hierarchy = hierarchy.get(0, i);
-            if (temp_hierarchy[2] != -1 && ic == 0) {
+            if (temp_hierarchy[2] != -1) {
                 ic++;
-            } else if (temp_hierarchy[2] != -1) {
-                ic++;
-            } else if (temp_hierarchy[2] == -1) {
+            } else {
                 ic = 0;
             }
 
+            // 当前 ic-1 的值表示第i个轮廓为第几个子轮廓
             if (ic >= 2) {
-                double area = Imgproc.contourArea(contours.get(i));
+                // 在这里取出所有的含有两个以上子轮廓的轮廓
+                int parentIdx = (int) temp_hierarchy[3];
+                double area = Imgproc.contourArea(contours.get(parentIdx));
 
-                if (area > 25 && area < 400) {
+                if (area > 25 && area < 2500) {
                     MatOfPoint2f temp_point2f = new MatOfPoint2f(contours.get(i).toArray());
                     RotatedRect rotatedRect = Imgproc.minAreaRect(temp_point2f);
 
@@ -49,7 +50,7 @@ public class CanyinMethod {
                     double ratio = rect_width / rect_height;
                     if (ratio > 0.85 && ratio < 1.2) {
                         if (!(rect_width > 20 || rect_width < 5 || rect_height > 20 || rect_height < 5)) {
-                            temp_contours.add(contours.get(i - 1));
+                            temp_contours.add(contours.get(parentIdx));
                         }
                     }
                 }
@@ -270,7 +271,7 @@ public class CanyinMethod {
             }
         } else {
             rollAngle = Math.toDegrees(Math.atan(deltay / deltax));
-            if(deltax > 0){
+            if (deltax > 0) {
                 rollAngle = rollAngle + 180;
             }
         }

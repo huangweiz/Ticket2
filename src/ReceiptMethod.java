@@ -39,18 +39,19 @@ public class ReceiptMethod {
 
         for (int i = 0; i < contours.size(); i++) {
             double[] temp_hierarchy = hierarchy.get(0, i);
-            if (temp_hierarchy[2] != -1 && ic == 0) {
+            if (temp_hierarchy[2] != -1) {
                 ic++;
-            } else if (temp_hierarchy[2] != -1) {
-                ic++;
-            } else if (temp_hierarchy[2] == -1) {
+            } else {
                 ic = 0;
             }
 
+            // 当前 ic-1 的值表示第i个轮廓为第几个子轮廓
             if (ic >= 2) {
-                double area = Imgproc.contourArea(contours.get(i));
+                // 在这里取出所有的含有两个以上子轮廓的轮廓
+                int parentIdx = (int) temp_hierarchy[3];
+                double area = Imgproc.contourArea(contours.get(parentIdx));
 
-                if (area > 25 && area < 400) {
+                if (area > 25 && area < 2500) {
                     MatOfPoint2f temp_point2f = new MatOfPoint2f(contours.get(i).toArray());
                     RotatedRect rotatedRect = Imgproc.minAreaRect(temp_point2f);
 

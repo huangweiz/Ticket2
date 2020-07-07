@@ -37,18 +37,19 @@ public class TrainMethod {
 
         for (int i = 0; i < contours.size(); i++) {
             double[] temp_hierarchy = hierarchy.get(0, i);
-            if (temp_hierarchy[2] != -1 && ic == 0) {
+            if (temp_hierarchy[2] != -1) {
                 ic++;
-            } else if (temp_hierarchy[2] != -1) {
-                ic++;
-            } else if (temp_hierarchy[2] == -1) {
+            } else {
                 ic = 0;
             }
 
+            // 当前 ic-1 的值表示第i个轮廓为第几个子轮廓
             if (ic >= 2) {
-                double area = Imgproc.contourArea(contours.get(i));
+                // 在这里取出所有的含有两个以上子轮廓的轮廓
+                int parentIdx = (int) temp_hierarchy[3];
+                double area = Imgproc.contourArea(contours.get(parentIdx));
 
-                if (area > 25 && area < 400) {
+                if (area > 25 && area < 2500) {
                     MatOfPoint2f temp_point2f = new MatOfPoint2f(contours.get(i).toArray());
                     RotatedRect rotatedRect = Imgproc.minAreaRect(temp_point2f);
 
@@ -220,7 +221,7 @@ public class TrainMethod {
                 // 根据四个顶点坐标计算出发票中心坐标，需要旋转的角度
                 Point ticket_center = getPoint(rectPoint);
                 double roll_angle = getAngle(rectPoint);
-                System.out.println(roll_angle);
+//                System.out.println(roll_angle);
 
                 // 求出发票的长宽和需要围绕中心点裁剪出来的正方形的边长
                 double ticket_width = Math.sqrt(Math.abs((rectPoint[1].y - rectPoint[0].y) * (rectPoint[1].y - rectPoint[0].y) + (rectPoint[1].x - rectPoint[0].x) * (rectPoint[1].x - rectPoint[0].x)));
